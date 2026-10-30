@@ -1,5 +1,6 @@
 package parking;
 
+import parking.ParkingService.HistoryRow;
 import parking.ParkingService.ParkingException;
 import parking.ParkingService.Receipt;
 import parking.ParkingService.Slot;
@@ -39,7 +40,7 @@ public class Main {
                         === Smart Parking (%d slots) ===
                         1) Show slots      2) Reserve      3) Vehicle entry
                         4) Vehicle exit    5) Cancel reservation
-                        6) Simulate concurrent cars        0) Quit
+                        6) Simulate concurrent cars   7) History   0) Quit
                         > """.formatted(Config.PARK_SLOTS));
                 String choice = in.nextLine().trim();
                 try {
@@ -57,6 +58,7 @@ public class Main {
                             System.out.println("Reservation cancelled.");
                         }
                         case "6" -> simulate(svc);
+                        case "7" -> showHistory(svc);
                         case "0" -> { return; }
                         default -> System.out.println("Unknown option.");
                     }
@@ -69,9 +71,28 @@ public class Main {
         }
     }
 
-    private static String ask(Scanner in) {
+    private static String ask(Scanner in) throws ParkingException {
         System.out.print("Vehicle number: ");
-        return in.nextLine().trim().toUpperCase();
+        String v = in.nextLine().trim().toUpperCase();
+        if (!Config.VEHICLE_PATTERN.matcher(v).matches()) {
+            throw new ParkingException("Enter a vehicle number (3-15 letters, digits, space or dash).");
+        }
+        return v;
+    }
+
+    private static void showHistory(ParkingService svc) throws ParkingException {
+        List<HistoryRow> rows = svc.history(20);
+        if (rows.isEmpty()) {
+            System.out.println("No records yet.");
+            return;
+        }
+        System.out.println("Last " + rows.size() + " record(s), newest first:");
+        for (HistoryRow r : rows) {
+            System.out.printf("%-15s slot %d  in %s  out %s  fee %s%n",
+                    r.vehicle(), r.slot(), r.entry().format(FMT),
+                    r.exit() == null ? "still parked" : r.exit().format(FMT),
+                    r.fee() == null ? "-" : r.fee());
+        }
     }
 
     private static void showSlots(ParkingService svc) throws ParkingException {

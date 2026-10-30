@@ -4,4 +4,8 @@
 cd "$(dirname "$0")"
 MAIN=parking.ParkingApp
 [ "$1" = "console" ] && MAIN=parking.Main
-exec java -cp "out;lib/*" "$MAIN"
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*) SEP=";" ;;
+  *) SEP=":" ;;
+esac
+exec java -cp "out${SEP}lib/*" "$MAIN"

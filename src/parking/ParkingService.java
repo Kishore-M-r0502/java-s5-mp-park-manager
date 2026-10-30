@@ -167,6 +167,30 @@ public class ParkingService {
         });
     }
 
+    public record HistoryRow(String vehicle, int slot, LocalDateTime entry,
+                             LocalDateTime exit, BigDecimal fee) {}
+
+    /** Most recent parking records first (exit/fee are null while still parked). */
+    public List<HistoryRow> history(int limit) throws ParkingException {
+        return inTx(c -> {
+            List<HistoryRow> out = new ArrayList<>();
+            try (PreparedStatement ps = c.prepareStatement(
+                    "SELECT vehicle_no, slot_no, entry_time, exit_time, fee "
+                            + "FROM parking_records ORDER BY id DESC LIMIT ?")) {
+                ps.setInt(1, limit);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Timestamp ex = rs.getTimestamp(4);
+                        out.add(new HistoryRow(rs.getString(1), rs.getInt(2),
+                                rs.getTimestamp(3).toLocalDateTime(),
+                                ex == null ? null : ex.toLocalDateTime(), rs.getBigDecimal(5)));
+                    }
+                }
+            }
+            return out;
+        });
+    }
+
     // ---------- helpers ----------
 
     private static Optional<Slot> slotOf(Connection c, String vehicle) throws SQLException {
