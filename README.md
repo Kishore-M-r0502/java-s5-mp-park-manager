@@ -8,7 +8,7 @@ No Maven needed: just a JDK (17+) and the MySQL JDBC driver jar.
    https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar
 3. (Optional) credentials: `export DB_USER=root DB_PASSWORD=yourpass`
    (Windows: `set DB_USER=root` and `set DB_PASSWORD=yourpass`)
-
+4. Powershell: `$env:DB_PASSWORD="your_password"`
 ## Build and run
 Linux/macOS: `./build.sh` then `./run.sh` (GUI) or `./run.sh console`
 Windows:     `build.bat` then `run.bat` (GUI) or `run.bat console`
