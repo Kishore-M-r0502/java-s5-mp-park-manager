@@ -14,3 +14,5 @@ Linux/macOS: `./build.sh` then `./run.sh` (GUI) or `./run.sh console`
 Windows:     `build.bat` then `run.bat` (GUI) or `run.bat console`
 
 Slots are set by `Config.PARK_SLOTS` (8).
+
+- MySQL 8.0.46
