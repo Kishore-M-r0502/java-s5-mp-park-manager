@@ -16,3 +16,10 @@ Windows:     `build.bat` then `run.bat` (GUI) or `run.bat console`
 Slots are set by `Config.PARK_SLOTS` (8).
 
 - MySQL 8.0.46
+
+## WARNING - Parking Slot Configurations
+
+
+For information about changing the parking capacity and other
+configuration considerations, see [configuration.md](configuration.md).
+
